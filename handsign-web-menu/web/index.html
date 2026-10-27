@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hand Sign Challenge</title>
+<style>
+  [hidden] { display:none !important; }
+  body { margin:0; background:#12141a; color:#eee; font-family:system-ui,"Yu Gothic","Noto Sans JP",sans-serif; text-align:center; }
+  .screen { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:20px; box-sizing:border-box; }
+  h1 { font-size:2.6em; margin:0; letter-spacing:.04em; }
+  h1 small { display:block; font-size:.5em; color:#ffd24a; letter-spacing:.2em; margin-bottom:6px; }
+  .sub { opacity:.7; max-width:420px; margin:0; }
+  .btns { display:flex; flex-direction:column; gap:12px; width:240px; margin-top:12px; }
+  button { font-size:1.2em; padding:12px 28px; border:0; border-radius:8px; background:#e8590c; color:#fff; cursor:pointer; }
+  button.secondary { background:#2b303c; }
+  button:disabled { background:#555; cursor:default; }
+  #menuMsg { min-height:1.4em; color:#ffd24a; font-size:.9em; }
+  header { padding:10px; display:flex; justify-content:center; gap:28px; align-items:center; flex-wrap:wrap; }
+  .stat b { font-size:1.6em; display:block; }
+  header button { font-size:1em; padding:8px 18px; }
+  #wrap { position:relative; width:min(960px,100vw); margin:0 auto; }
+  canvas { width:100%; background:#000; display:block; border-radius:8px; }
+  #count { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:9em; font-weight:bold; color:#ffd24a; text-shadow:0 0 30px #000; }
+  #over { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:#000c; border-radius:8px; }
+  #over h2 { font-size:2.2em; margin:0; }
+  #over .btns { flex-direction:row; width:auto; margin:8px 0 0; }
+  #jname { font-size:1.4em; margin:12px 0 4px; }
+  #target { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; min-height:84px; }
+  .chip { border:2px solid #444; border-radius:10px; padding:6px 10px; min-width:64px; background:#1d212b; }
+  .chip b { font-size:2em; display:block; line-height:1.1; }
+  .chip span { font-size:.7em; opacity:.8; }
+  .chip.next { border-color:#ffd24a; box-shadow:0 0 12px #ffd24a88; }
+  .chip.done { border-color:#3c6; background:#173a26; }
+  #msg { height:1.5em; color:#ffd24a; font-weight:bold; }
+  #fps { font-size:.85em; opacity:.7; padding:4px; }
+  #menu { background:#000; font-family:"Courier New",Consolas,monospace; font-weight:bold; gap:0; }
+  #menu #title { color:#666; font-size:.8em; letter-spacing:.3em; margin-bottom:40px; }
+  #menu .items { display:flex; flex-direction:column; align-items:center; gap:56px; }
+  button.item { background:none; color:#fff; font:inherit; font-size:1.05em; padding:8px 26px; border-radius:4px; outline:none; min-width:150px; }
+  button.item.sel, button.item:hover:not(:disabled) { background:#fff; color:#2b2bff; }
+  button.item:disabled { background:none; color:#555; }
+  #menu #menuMsg { color:#666; font-size:.8em; margin-top:48px; }
+</style>
+</head>
+<body>
+
+<!-- MAIN MENU: the camera is NOT started here -->
+<section id="menu" class="screen">
+  <div id="title">HAND SIGN CHALLENGE</div>
+  <div class="items">
+    <button id="startBtn" class="item" disabled>Start game</button>
+    <button id="quitBtn" class="item">Quit game</button>
+  </div>
+  <div id="menuMsg">Loading game…</div>
+</section>
+
+<!-- GAME: hidden until Start; camera feed lives here -->
+<section id="game" hidden>
+  <header>
+    <div class="stat"><b id="score">0</b>score</div>
+    <div class="stat"><b id="time">-</b>seconds</div>
+    <button id="menuBtn" class="secondary">Menu</button>
+  </header>
+  <div id="wrap">
+    <canvas id="view" width="960" height="540"></canvas>
+    <div id="count" hidden></div>
+    <div id="over" hidden>
+      <h2>Time up!</h2>
+      <div id="overText"></div>
+      <div class="btns">
+        <button id="againBtn">Play again</button>
+        <button id="overMenuBtn" class="secondary">Menu</button>
+      </div>
+    </div>
+  </div>
+  <div id="jname">&nbsp;</div>
+  <div id="target"></div>
+  <div id="msg"></div>
+  <div id="fps"></div>
+</section>
+
+<!-- QUIT SCREEN -->
+<section id="bye" class="screen" hidden>
+  <h1>Thanks for playing!</h1>
+  <p class="sub">The camera is off. You can close this tab now.</p>
+  <div class="btns"><button id="backBtn">Back to menu</button></div>
+</section>
+
+<video id="cam" autoplay playsinline muted hidden></video>
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.1/dist/ort.min.js"></script>
+<script src="detect.js?v=3"></script>
+<script src="game.js?v=3"></script>
+<script src="main.js?v=3"></script>
+</body>
+</html>
