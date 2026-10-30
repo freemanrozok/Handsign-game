@@ -26,8 +26,8 @@
 
   class Game {
     constructor(opts) {
-      this.duration = (opts && opts.duration) || 90;   // seconds
-      this.state = 'idle';                              // idle | playing | over
+      this.duration = (opts && opts.duration) || 90;   
+      this.state = 'idle';                              
       this.onChange = () => {};
     }
     start() {
